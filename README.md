@@ -1,6 +1,6 @@
 # 🏦 Credit Risk Scoring API
 
-A production-ready machine learning API that predicts the probability of loan default, classifies applicants into risk tiers, and (optionally) explains the decision in plain English using an LLM. Built end-to-end: EDA → feature engineering → imbalanced classification → model serving → containerization.
+A production ready machine learning API that predicts the probability of loan default, classifies applicants into risk tiers, and (optionally) explains the decision in plain English using an LLM. Built end-to-end: EDA → feature engineering → imbalanced classification → model serving → containerization.
 
 ---
 
@@ -8,10 +8,9 @@ A production-ready machine learning API that predicts the probability of loan de
 
 Given an applicant's financial and demographic profile, the API returns:
 
-- **Probability of default** — a calibrated score between 0 and 1
-- **Binary prediction** — will they default or not
-- **Risk tier** — `Low Risk` / `Medium Risk` / `High Risk`
-- **Plain-English explanation** *(optional, LLM-powered)* — why the model made this call, so the output isn't just a black-box number
+- **Probability of default** : a calibrated score between 0 and 1
+- **Binary prediction** : will they default or not
+- **Risk tier** :`Low Risk` / `Medium Risk` / `High Risk`
 
 ---
 
@@ -25,13 +24,13 @@ Trained on the [Home Credit Default Risk](https://www.kaggle.com/c/home-credit-d
 | Mean Gini | **0.4691** |
 | KS Statistic | **0.3514** (p < 0.0001) |
 
-These numbers reflect a real, imbalanced credit dataset — Gini ~0.47 and KS ~0.35 are solidly in the range banks consider usable for risk segmentation, not just a toy demo.
+These numbers reflect a real, imbalanced credit dataset: Gini ~0.47 and KS ~0.35 are solidly in the range banks consider usable for risk segmentation, not just a toy demo.
 
 ---
 
 ## Under the hood
 
-The model isn't a single classifier — it's a full `imblearn` pipeline that handles missing data, encoding, outliers, class imbalance, and scaling before XGBoost ever sees a row:
+The model isn't a single classifier, it's a full `imblearn` pipeline that handles missing data, encoding, outliers, class imbalance, and scaling before XGBoost ever sees a row:
 
 ```
 ColumnTransformer
@@ -49,9 +48,9 @@ StandardScaler
 XGBClassifier (scale_pos_weight tuned for class imbalance)
 ```
 
-**Custom transformer:** `NamedWinsorizer` in `custom_transformers.py` is a scikit-learn-compatible transformer that preserves column names through the pipeline while capping outliers — necessary because most winsorization implementations return bare numpy arrays and break downstream `ColumnTransformer` steps.
+**Custom transformer:** `NamedWinsorizer` in `custom_transformers.py` is a scikit-learn compatible transformer that preserves column names through the pipeline while capping outliers necessary because most winsorization implementations return bare numpy arrays and break downstream `ColumnTransformer` steps.
 
-**Explainability:** SHAP is used offline (see the notebook) to validate feature-level contributions per prediction, ensuring the model's decisions are auditable — a hard requirement for any real credit risk system.
+**Explainability:** SHAP is used offline (see the notebook) to validate feature level contributions per prediction, ensuring the model's decisions are auditable, a hard requirement for any real credit risk system.
 
 ---
 
@@ -171,30 +170,23 @@ Returns the raw model output: probability, binary prediction, and risk tier.
   "predicted_default": 0,
   "risk_tier": "Medium Risk"
 }
-```
-
-### `POST /predict` *(if using the LLM explanation extension)*
-
-Same input, but the response also includes a human-readable explanation of the decision, grounded strictly in the risk score, tier, and contributing factors — no hallucinated reasoning.
-
-```json
-{
-  "risk_score": 0.4842,
-  "risk_category": "Medium Risk",
-  "explanation": "This applicant falls into the Medium Risk category with a default probability of 48.4%..."
-}
-```
-
 ---
 
 ## Notes on the data
 
-- `DAYS_BIRTH`, `DAYS_EMPLOYED`, `DAYS_REGISTRATION`, `DAYS_ID_PUBLISH`, and `DAYS_LAST_PHONE_CHANGE` are all **negative integers** relative to the application date (e.g. `DAYS_BIRTH: -14600` ≈ 40 years old). This matches the raw Home Credit schema — don't convert to positive values.
+- `DAYS_BIRTH`, `DAYS_EMPLOYED`, `DAYS_REGISTRATION`, `DAYS_ID_PUBLISH`, and `DAYS_LAST_PHONE_CHANGE` are all **negative integers** relative to the application date (e.g. `DAYS_BIRTH: -14600` ≈ 40 years old). This matches the raw Home Credit schema, don't convert to positive values.
 - `EXT_SOURCE_1/2/3` are normalized external credit bureau scores in the `0–1` range.
-- `CODE_GENDER` expects `"M"` / `"F"` — matching the encoder's training categories exactly matters, since unseen categories are handled via `handle_unknown='ignore'` in the one-hot step (silently zeroed, not rejected).
+- `CODE_GENDER` expects `"M"` / `"F"` matching the encoder's training categories exactly matters, since unseen categories are handled via `handle_unknown='ignore'` in the one hot step (silently zeroed, not rejected).
 
 ---
+Clone the repo
+git clone https://github.com/Oluwanifemmi/Risk-scoring.git
 
-## Disclaimer
+Build the image
+docker build -t risk-app .
 
-This is a portfolio / educational project trained on a public Kaggle dataset. It is **not** a validated credit decisioning system and should not be used to make real lending decisions without proper regulatory review, bias auditing, and much more rigorous validation than a single train/test split provides.
+Run the container 
+docker run -p 8000:8000
+
+open in the browser
+http://localhost:8000/docs
