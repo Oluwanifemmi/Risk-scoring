@@ -171,22 +171,3 @@ Returns the raw model output: probability, binary prediction, and risk tier.
   "risk_tier": "Medium Risk"
 }
 ---
-
-## Notes on the data
-
-- `DAYS_BIRTH`, `DAYS_EMPLOYED`, `DAYS_REGISTRATION`, `DAYS_ID_PUBLISH`, and `DAYS_LAST_PHONE_CHANGE` are all **negative integers** relative to the application date (e.g. `DAYS_BIRTH: -14600` ≈ 40 years old). This matches the raw Home Credit schema, don't convert to positive values.
-- `EXT_SOURCE_1/2/3` are normalized external credit bureau scores in the `0–1` range.
-- `CODE_GENDER` expects `"M"` / `"F"` matching the encoder's training categories exactly matters, since unseen categories are handled via `handle_unknown='ignore'` in the one hot step (silently zeroed, not rejected).
-
----
-Clone the repo
-git clone https://github.com/Oluwanifemmi/Risk-scoring.git
-
-Build the image
-docker build -t risk-app .
-
-Run the container 
-docker run -p 8000:8000
-
-open in the browser
-http://localhost:8000/docs
