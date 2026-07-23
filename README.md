@@ -105,10 +105,8 @@ docker run -p 8000:8000 risk-app
 > docker run -p 8000:8000 -e OPENAI_API_KEY=your-key-here risk-app
 > ```
 
-### 4. Open the API docs
-Visit **[http://localhost:8000/docs](http://localhost:8000/docs)** in your browser to test the endpoints via Swagger UI.
-
-> ⚠️ Access it via `localhost`, not `0.0.0.0` — the latter is a bind address inside the container, not a reachable address from your browser.
+### 4. Open the aws link
+Visit **[[http://localhost:8000/docs](http://13.40.7.247:8000/docs)]** 
 
 ---
 
