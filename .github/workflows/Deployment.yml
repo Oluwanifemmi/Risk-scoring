@@ -2,12 +2,12 @@ name: Deploy to Amazon ECS
 
 on:
   push:
-    branches: [ main]
+    branches: [main]
 
 env:
   AWS_REGION: eu-west-2                        # change to your region
   ECR_REPOSITORY: risk-scoring-app          # your ECR repo name
-  ECS_SERVICE: risk-scoring-app-service          # your ECS service name
+  ECS_SERVICE: risk-scoring-app-service           # your ECS service name
   ECS_CLUSTER: risk-scoring-app-cluster          # your ECS cluster name
   ECS_TASK_DEFINITION: .aws/task-definition.json # path to task def file in repo
   CONTAINER_NAME:  risk-scoring-app-container     # name inside task-definition.json
