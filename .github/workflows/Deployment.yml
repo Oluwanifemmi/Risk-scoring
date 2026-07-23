@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: risk-scoring-app          # your ECR repo name
   ECS_SERVICE: risk-scoring-app-service          # your ECS service name
   ECS_CLUSTER: risk-scoring-app-cluster          # your ECS cluster name
-  ECS_TASK_DEFINITION: arn:aws:ecs:eu-west-2:977778967671:task-definition/risk-scoring-app-task:2 # path to task def file in repo
+  ECS_TASK_DEFINITION: .aws/task-definition.json # path to task def file in repo
   CONTAINER_NAME:  risk-scoring-app-container     # name inside task-definition.json
 
 jobs:
@@ -24,8 +24,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.ACCESSKEY }}
+          aws-secret-access-key: ${{ secrets.SECRETACCESSKEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
