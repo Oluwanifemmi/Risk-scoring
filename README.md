@@ -106,7 +106,7 @@ docker run -p 8000:8000 risk-app
 > ```
 
 ### 4. Open the aws link
-Visit **[[http://localhost:8000/docs](http://13.40.7.247:8000/docs)]** 
+Visit **[(http://18.133.183.140:8000/docs)](http://18.133.183.140:8000/docs)]** 
 
 ---
 
